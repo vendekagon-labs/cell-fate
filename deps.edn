@@ -1,5 +1,7 @@
 {:paths ["src"]
  :deps {com.datomic/peer {:mvn/version "1.0.7021"}
+        techascent/tech.ml.dataset {:mvn/version "7.019"}
+        scicloj/tablecloth {:mvn/version "7.014"}
         com.cnuernber/charred {:mvn/version "1.033"}}
  :aliases {:dev {:extra-paths ["dev"]}}}
 
