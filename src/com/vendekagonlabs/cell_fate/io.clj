@@ -70,8 +70,9 @@
 (defn matrix-market->dataset
   [mtx-root-path]
   (let [record-seq (read-matrix-market mtx-root-path)
-        exploded (sparse->dense record-seq)]
-    (ds/->>dataset exploded)))
+        exploded (sparse->dense record-seq)
+        dataset (ds/->>dataset exploded)]
+    (ds/replace-missing dataset 0)))
 
 
 (comment
