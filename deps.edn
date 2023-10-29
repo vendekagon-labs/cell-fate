@@ -1,0 +1,10 @@
+{:paths ["src"]
+ :deps {com.datomic/peer {:mvn/version "1.0.7021"}
+        com.cnuernber/charred {:mvn/version "1.033"}}
+ :aliases {:dev {:extra-paths ["dev"]}}}
+
+; umap
+; leiden clustering algorithm
+; reading parquet
+; data frame manipulation
+; notebook / plotting, etc.
