@@ -4,7 +4,7 @@
             [charred.api :as charred]))
 
 
-(defn read-tsv
+(defn read-space-delimited
   [file-path]
   (with-open [reader (io/reader file-path)]
     (doall
@@ -31,7 +31,7 @@
 (defn read-sparse-matrix
   [sparse-matrix-path]
   (->> sparse-matrix-path
-       (read-tsv)
+       (read-space-delimited)
        (drop 2)
        (map (partial mapv #(Integer/parseInt %)))))
 
@@ -47,8 +47,8 @@
     (map (fn [[gene-ind cell-ind raw-count]]
            ;; dec b/c matrix market is one-based indexing,
            ;; we have to drop it down to zero-based for clj
-           [(genes (dec gene-ind))
-            (barcodes (dec cell-ind))
+           [(barcodes (dec cell-ind))
+            (genes (dec gene-ind))
             raw-count])
          matrix-raw)))
 
