@@ -1,7 +1,8 @@
 (ns com.vendekagonlabs.cell-fate.io
   (:require [clojure.java.io :as io]
             [clojure.string :as str]
-            [charred.api :as charred]))
+            [charred.api :as charred]
+            [tech.v3.dataset :as ds]))
 
 
 (defn read-space-delimited
@@ -52,8 +53,30 @@
             raw-count])
          matrix-raw)))
 
+(defn sparse->dense
+  [sparse-record-seq]
+  (->> sparse-record-seq
+       (map (fn [[barcode gene raw-count]]
+              {:barcode barcode
+               :hgnc-symbol gene
+               :raw-count raw-count}))
+       (group-by :barcode)
+       (map (fn [[barcode measurement-maps]]
+              (reduce merge {:barcode barcode}
+                      (map (fn [{:keys [hgnc-symbol raw-count]}]
+                             {hgnc-symbol raw-count})
+                           measurement-maps))))))
+
+(defn matrix-market->dataset
+  [mtx-root-path]
+  (let [record-seq (read-matrix-market mtx-root-path)
+        exploded (sparse->dense record-seq)]
+    (ds/->>dataset exploded)))
+
 
 (comment
+  (use 'clojure.repl)
   (def mtx-root "data/filtered_gene_bc_matrices/hg19/")
-  (def cell-matrix (read-matrix-market mtx-root))
-  (take 3 cell-matrix))
+  (def pbmc-ds (matrix-market->dataset mtx-root))
+  (ds/column-count pbmc-ds)
+  (ds/row-count pbmc-ds))
